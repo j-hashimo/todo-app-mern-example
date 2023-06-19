@@ -4,6 +4,7 @@ const cors = require('cors');
 require('dotenv').config();
 
 const app = express();
+app.use(cors()); //need to list this right after declaring express function in order for cors to work
 
 app.use((req, res, next) => {
   console.log(req.path, req.method);
@@ -17,7 +18,6 @@ app.use('/api/todoList', todoListRoutes);
 
 const port = process.env.PORT || 5000;
 
-app.use(cors());
 const mongoose = require('mongoose');
 app.use(express.json());
 
