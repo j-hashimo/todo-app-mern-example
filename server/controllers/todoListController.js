@@ -53,6 +53,7 @@ exports.createTask = async (req, res) => {
 
         res.json(todoList);
     } catch (err) {
+        console.error(err);
         res.status(500).send('Server Error');
     }
 };
@@ -60,18 +61,20 @@ exports.createTask = async (req, res) => {
 // Function to delete a task within a todo list
 exports.deleteTask = async (req, res) => {
     try {
-        let todoList = await TodoList.findById(req.params.id);
-        if (!todoList) return res.status(404).json({ msg: 'Todo list not found' });
-
-        const removeIndex = todoList.tasks.map(task => task.id).indexOf(req.params.taskId);
-        if (removeIndex === -1) return res.status(404).json({ msg: 'Task not found' });
-
-        todoList.tasks.splice(removeIndex, 1);
-
-        await todoList.save();
-
-        res.json(todoList);
+      let todoList = await TodoList.findById(req.params.id);
+      if (!todoList) return res.status(404).json({ msg: 'Todo list not found' });
+  
+      const taskId = req.params.taskId;
+      // Use pull to remove the task from the tasks array
+      todoList.tasks.pull({_id: taskId});
+  
+      await todoList.save();
+  
+      res.json(todoList);
     } catch (err) {
-        res.status(500).send('Server Error');
+      console.error(err);
+      res.status(500).send('Server Error');
     }
-};
+  };
+  
+  

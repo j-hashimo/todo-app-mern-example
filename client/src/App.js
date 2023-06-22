@@ -1,21 +1,32 @@
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import React, { useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { fetchTodoLists, selectAllTodoLists, addTodoList } from './features/todoListSlice';
 import TodoList from './components/TodoList';
 
 function App() {
-  const [todoLists, setTodoLists] = useState([]);
+  const dispatch = useDispatch();
+  const todoLists = useSelector(selectAllTodoLists);
 
   useEffect(() => {
-    const fetchData = async () => {
-      const result = await axios.get('http://localhost:5000/api/todoList');
-      setTodoLists(result.data);
+    dispatch(fetchTodoLists());
+  }, [dispatch]);
+  const handleNewTodoList = (event) => {
+    if (event.key === 'Enter' && event.target.value.trim() !== '') {
+      dispatch(addTodoList(event.target.value));
+      event.target.value = '';
     }
-    fetchData();
-  }, []);
+  };
 
   return (
     <div className="dark bg-gray-800 min-h-screen p-10 text-white">
-      <h1 className="text-3xl mb-4">To-Do Lists</h1>
+      <h1 className="text-3xl mb-4 text-white">To-Do Lists</h1>
+      
+      <input
+        className="bg-gray-700 rounded p-2 mb-4"
+        type="text"
+        placeholder="New list..."
+        onKeyDown={handleNewTodoList}
+      />
       {todoLists.map(todoList => (
         <TodoList key={todoList._id} todoList={todoList} />
       ))}
@@ -24,4 +35,3 @@ function App() {
 }
 
 export default App;
-

@@ -1,15 +1,16 @@
 import React from 'react';
-import ReactDOM from 'react-dom/client';
-import './index.css';
+import ReactDOM from 'react-dom';
 import App from './App';
-import {BrowserRouter} from "react-router-dom";
+import "./index.css"; //make sure you import everything bc I deleted it by mistake and lost the tailwindcss styles
+import { Provider } from 'react-redux';
+import store from './store';
 
 
-const root = ReactDOM.createRoot(document.getElementById('root'));
-root.render(
-  <BrowserRouter>
+ReactDOM.render(
+  <Provider store={store}>
     <App />
-  </BrowserRouter>
+  </Provider>,
+  document.getElementById('root')
 );
 
 // If you want to start measuring performance in your app, pass a function
