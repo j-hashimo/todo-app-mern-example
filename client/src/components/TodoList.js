@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { addTask, deleteTask, toggleTaskCompletion } from '../features/todoListSlice';
+import { addTask, deleteTask, toggleTaskCompletion, deleteTodoList } from '../features/todoListSlice';
 
 function TodoList({ todoList }) {
   const dispatch = useDispatch();
@@ -21,9 +21,21 @@ function TodoList({ todoList }) {
     dispatch(toggleTaskCompletion({ todoListId: todoList._id, taskId }));
   };
 
+  const handleDeleteList = async (id) => {
+    dispatch(deleteTodoList(id));
+};
+
   return (
     <div className="bg-gray-700 rounded p-4 mt-4">
-      <h2 className="text-2xl">{todoList.title}</h2>
+      <div className="flex justify-between">
+        <h2 className="text-2xl">{todoList.title}</h2>
+        <button
+          className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
+          onClick={() => handleDeleteList(todoList._id)}
+          >
+          Delete
+        </button>
+      </div>
       {todoList.tasks.map((task) => (
         <div className="flex justify-between items-center bg-gray-700 rounded p-2 mt-2" key={task._id}>
           <input

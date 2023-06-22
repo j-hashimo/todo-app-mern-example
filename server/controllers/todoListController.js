@@ -27,6 +27,7 @@ exports.createTodoList = async (req, res) => {
 };
 
 // Function to delete a todo list
+// Function to delete a todo list and all its tasks
 exports.deleteTodoList = async (req, res) => {
     try {
         let todoList = await TodoList.findById(req.params.id);
@@ -34,11 +35,13 @@ exports.deleteTodoList = async (req, res) => {
 
         await TodoList.findByIdAndRemove(req.params.id);
 
-        res.json({ msg: 'Todo list removed' });
+        res.json({ msg: 'Todo list deleted' });
     } catch (err) {
+        console.error(err.message);
         res.status(500).send('Server Error');
     }
 };
+
 
 // Function to create a new task within a todo list
 exports.createTask = async (req, res) => {
