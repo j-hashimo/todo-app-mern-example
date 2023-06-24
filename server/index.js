@@ -15,6 +15,7 @@ app.use(express.json());
 const todoListRoutes = require('./routes/todoList');
 
 app.use('/api/todoList', todoListRoutes);
+app.use('/api/users', require('./routes/users'));
 
 const port = process.env.PORT || 5000;
 

@@ -3,48 +3,105 @@ import axios from 'axios';
 
 export const fetchTodoLists = createAsyncThunk(
   'todoList/fetchTodoLists',
-  async () => {
-    const response = await axios.get('http://localhost:5000/api/todoList');
+  async (_, { getState }) => {
+    const token = getState().auth.token;
+    const config = { 
+      headers: { 
+        'Content-Type': 'application/json',
+        'x-auth-token': token
+      } 
+    };
+    const response = await axios.get('http://localhost:5000/api/todoList', config);
     return response.data;
   }
 );
 
 export const addTodoList = createAsyncThunk(
   'todoList/addTodoList',
-  async (title) => {
-    const response = await axios.post('http://localhost:5000/api/todoList', { title });
+  async ({title}, { getState }) => {
+    const token = getState().auth.token;
+    const config = { 
+      headers: { 
+        'Content-Type': 'application/json',
+        'x-auth-token': token
+      } 
+    };
+    const response = await axios.post('http://localhost:5000/api/todoList', { title }, config);
     return response.data;
   }
-); //this works, so try to do the same logic for the addTask variable
+);
 
 export const deleteTodoList = createAsyncThunk(
   'todoList/deleteTodoList',
-  async (id) => {
-    await axios.delete(`http://localhost:5000/api/todoList/${id}`);
+  async (id, { getState }) => {
+    const token = getState().auth.token;
+    const config = { 
+      headers: { 
+        'Content-Type': 'application/json',
+        'x-auth-token': token
+      } 
+    };
+    await axios.delete(`http://localhost:5000/api/todoList/${id}`, config);
     return id;
   }
 );
 
-export const toggleTaskCompletion = createAsyncThunk('todoList/toggleTask', async (payload) => {
-  console.log("Payload: ", payload);
-  const response = await axios.patch(`http://localhost:5000/api/todoList/${payload.todoListId}/task/${payload.taskId}`);
-  return response.data;
-});
+export const toggleTaskCompletion = createAsyncThunk(
+  'todoList/toggleTask', 
+  async (payload, { getState }) => {
+    const token = getState().auth.token;
+    const config = { 
+      headers: { 
+        'Content-Type': 'application/json',
+        'x-auth-token': token
+      } 
+    };
+    const response = await axios.patch(
+      `http://localhost:5000/api/todoList/${payload.todoListId}/task/${payload.taskId}`, 
+      config
+    );
+    return response.data;
+  }
+);
 
-export const deleteTask = createAsyncThunk('todoList/deleteTask', async (payload) => {
-  console.log("Payload: ", payload);
-  const response = await axios.delete(`http://localhost:5000/api/todoList/${payload.todoListId}/task/${payload.taskId}`);
-  return response.data;
-});
+export const deleteTask = createAsyncThunk(
+  'todoList/deleteTask', 
+  async (payload, { getState }) => {
+    const token = getState().auth.token;
+    const config = { 
+      headers: { 
+        'Content-Type': 'application/json',
+        'x-auth-token': token
+      } 
+    };
+    const response = await axios.delete(
+      `http://localhost:5000/api/todoList/${payload.todoListId}/task/${payload.taskId}`, 
+      config
+    );
+    return response.data;
+  }
+);
 
-export const addTask = createAsyncThunk('todoList/addTask', async (payload) => {
-  console.log("Payload: ", payload);
-  const response = await axios.post(`http://localhost:5000/api/todoList/${payload.todoListId}/task`, {
-    
-    description: payload.description,
-  });
-  return response.data;
-});
+export const addTask = createAsyncThunk(
+  'todoList/addTask', 
+  async (payload, { getState }) => {
+    const token = getState().auth.token;
+    const config = { 
+      headers: { 
+        'Content-Type': 'application/json',
+        'x-auth-token': token
+      } 
+    };
+    const response = await axios.post(
+      `http://localhost:5000/api/todoList/${payload.todoListId}/task`, 
+      {
+        description: payload.description,
+      }, 
+      config
+    );
+    return response.data;
+  }
+);
 
 const todoListSlice = createSlice({
   name: 'todoList',

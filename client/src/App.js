@@ -1,36 +1,32 @@
-import React, { useEffect } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import { fetchTodoLists, selectAllTodoLists, addTodoList } from './features/todoListSlice';
-import TodoList from './components/TodoList';
+import React from 'react';
+import { useSelector } from 'react-redux';
+import LoginForm from './components/LoginForm';
+import SignupForm from './components/SignupForm';
+import TodoListPage from './components/TodoListPage';
+import { Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter as Router } from 'react-router-dom';
 
 function App() {
-  const dispatch = useDispatch();
-  const todoLists = useSelector(selectAllTodoLists);
+  const isAuthenticated = useSelector(state => state.auth.isAuthenticated);
 
-  useEffect(() => {
-    dispatch(fetchTodoLists());
-  }, [dispatch]);
-  const handleNewTodoList = (event) => {
-    if (event.key === 'Enter' && event.target.value.trim() !== '') {
-      dispatch(addTodoList(event.target.value));
-      event.target.value = '';
-    }
-  };
+  if (!isAuthenticated) {
+    return (
+      <div className="dark bg-gray-800 min-h-screen p-10 text-white">
+        <h1 className="text-3xl mb-4 text-white">Login</h1>
+        <LoginForm />
+        <h1 className="text-3xl mb-4 text-white">Sign Up</h1>
+        <SignupForm />
+      </div>
+    );
+  }
 
   return (
-    <div className="dark bg-gray-800 min-h-screen p-10 text-white">
-      <h1 className="text-3xl mb-4 text-white">To-Do Lists</h1>
-      
-      <input
-        className="bg-gray-700 rounded p-2 mb-4"
-        type="text"
-        placeholder="New list..."
-        onKeyDown={handleNewTodoList}
-      />
-      {todoLists.map(todoList => (
-        <TodoList key={todoList._id} todoList={todoList} />
-      ))}
-    </div>
+    <Router>
+      <Routes>
+        <Route path="/" element={<Navigate to="/todolists" />} />
+        <Route path="/todolists" element={<TodoListPage />} />
+      </Routes>
+    </Router>
   );
 }
 
